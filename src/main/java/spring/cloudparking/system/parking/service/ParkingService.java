@@ -19,20 +19,23 @@ public class ParkingService
 {
     ParkingExceptionFactory parkingExceptionFactory;
 
+    //-------------------------------------------------------------------------------------
     @Autowired
     public ParkingService(ParkingExceptionFactory parkingExceptionFactory)
     {
         this.parkingExceptionFactory = parkingExceptionFactory;
     }
 
+    //-------------------------------------------------------------------------------------
     public final
     List<Parking> findAll()
     {
         return lstParking;
     }
 
+    //-------------------------------------------------------------------------------------
     public final
-    Parking add(Parking parking)
+    Parking add(@NonNull Parking parking)
     {
         parking.setId(nextId());
         parking.setEntry(LocalDateTime.now());
@@ -41,6 +44,7 @@ public class ParkingService
         return parking;
     }
 
+    //-------------------------------------------------------------------------------------
     public final
     Parking getById(@NonNull String id)
     {
@@ -52,6 +56,41 @@ public class ParkingService
             throw this.parkingExceptionFactory.createNotFoundException("Parking", "id", id);
 
         return filtered.get(0);
+    }
+
+    //-------------------------------------------------------------------------------------
+    public final
+    boolean existsById(@NonNull String id)
+    {
+        for(Parking parking : lstParking)
+            if(parking.getId().equals(id))
+                return true;
+        return false;
+    }
+
+    //-------------------------------------------------------------------------------------
+    public final
+    Parking updateById(@NonNull String id, @NonNull Parking parking)
+    {
+        Parking oldParking = this.getById(id);
+        oldParking.setEntry(parking.getEntry());
+        oldParking.setColor(parking.getColor());
+        oldParking.setState(parking.getState());
+        oldParking.setModel(parking.getModel());
+        oldParking.setBill(parking.getBill());
+
+        return oldParking;
+    }
+
+    //-------------------------------------------------------------------------------------
+    public final
+    Parking parkingExit(@NonNull String id)
+    {
+        Parking parking = this.getById(id);
+        parking.setExit(LocalDateTime.now());
+        parking.setBill(getBill(parking.getEntry(), parking.getExit()));
+
+        return parking;
     }
 
     //------------------------------------------------------------------------------------
@@ -94,6 +133,7 @@ public class ParkingService
 
         long hours = seconds / 3600;
         long minutes = ((seconds % 3600) / 60);
-        return (10 * (hours + (minutes/15)/4.0) );
+
+        return ( 10 * hours + (10/4 * (minutes/15)) );
     }
 }
