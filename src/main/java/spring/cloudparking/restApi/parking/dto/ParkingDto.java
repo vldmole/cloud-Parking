@@ -1,5 +1,6 @@
 package spring.cloudparking.restApi.parking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,9 @@ public class ParkingDto
     private String state;
     private String model;
     private String color;
+    @JsonFormat(pattern = "dd/mm/yyy hh:mm")
     private LocalDateTime entry;
+    @JsonFormat(pattern = "dd/mm/yyy hh:mm")
     private LocalDateTime exit;
     private Double bill;
 

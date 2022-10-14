@@ -54,4 +54,16 @@ public class ParkingDtoHelper
 
         return lstDto;
     }
+
+    public Parking parkingFromDto(CreateParkingDto dto)
+    {
+        Parking parking = new Parking();
+
+        parking.setModel(dto.getModel());
+        parking.setLicense(dto.getLicense());
+        parking.setState(dto.getState());
+        parking.setColor(dto.getColor());
+
+        return parking;
+    }
 }

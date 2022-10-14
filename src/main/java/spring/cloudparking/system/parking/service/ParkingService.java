@@ -1,6 +1,9 @@
 package spring.cloudparking.system.parking.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import spring.cloudparking.system.exception.ParkingExceptionFactory;
 import spring.cloudparking.system.parking.model.Parking;
 
 import java.time.Duration;
@@ -9,10 +12,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingService
 {
+    ParkingExceptionFactory parkingExceptionFactory;
+
+    @Autowired
+    public ParkingService(ParkingExceptionFactory parkingExceptionFactory)
+    {
+        this.parkingExceptionFactory = parkingExceptionFactory;
+    }
 
     public final
     List<Parking> findAll()
@@ -24,11 +35,26 @@ public class ParkingService
     Parking add(Parking parking)
     {
         parking.setId(nextId());
+        parking.setEntry(LocalDateTime.now());
         lstParking.add(parking);
 
         return parking;
     }
 
+    public final
+    Parking getById(@NonNull String id)
+    {
+        List<Parking> filtered = lstParking.stream()
+                .filter((parking -> parking.getId().equals(id)))
+                .collect(Collectors.toList());
+
+        if(filtered.size() == 0)
+            throw this.parkingExceptionFactory.createNotFoundException("Parking", "id", id);
+
+        return filtered.get(0);
+    }
+
+    //------------------------------------------------------------------------------------
     static int idCounter = 0;
     static String nextId()
     {
