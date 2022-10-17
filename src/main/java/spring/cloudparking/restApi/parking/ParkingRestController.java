@@ -38,7 +38,7 @@ public class ParkingRestController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ParkingDto> getById(@PathVariable String id)
+    public ResponseEntity<ParkingDto> getById(@PathVariable Long id)
     {
         try
         {
@@ -63,7 +63,7 @@ public class ParkingRestController
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ParkingDto> put(@PathVariable String id, @RequestBody ParkingDto dto)
+    public ResponseEntity<ParkingDto> put(@PathVariable Long id, @RequestBody ParkingDto dto)
     {
         Parking parking = this.parkingDtoHelper.parkingFromDto(dto);
 
@@ -75,7 +75,7 @@ public class ParkingRestController
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ParkingDto> delete(@PathVariable String id)
+    public ResponseEntity<ParkingDto> delete(@PathVariable Long id)
     {
         Parking parking = this.parkingService.parkingExit(id);
 

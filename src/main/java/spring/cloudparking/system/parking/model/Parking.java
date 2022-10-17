@@ -1,26 +1,36 @@
 package spring.cloudparking.system.parking.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 public class Parking
 {
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="Pk_id")
+    private Long id;
+    @Column(name="Pk_License", nullable = false)
     private String license;
+    @Column(name="Pk_State", nullable = false)
     private String state;
+    @Column(name="Pk_model", nullable = false)
     private String model;
+    @Column(name="Pk_color", nullable = false)
     private String color;
+    @Column(name="Pk_EntryDateTime", nullable = false)
     private LocalDateTime entry;
     private LocalDateTime exit;
     private Double bill;
 
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
+    public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Long getId()
+    {
+        return id;
     }
 
     public String getLicense()

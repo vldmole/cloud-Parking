@@ -1,12 +1,10 @@
 package spring.cloudparking.restApi.parking.dto;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import spring.cloudparking.system.parking.model.Parking;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class ParkingDtoHelper

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Component
 public class ParkingDto
 {
-    private String id;
+    private Long id;
     private String license;
     private String state;
     private String model;
@@ -19,12 +19,12 @@ public class ParkingDto
     private LocalDateTime exit;
     private Double bill;
 
-    public String getId()
+    public Long getId()
     {
         return id;
     }
 
-    public void setId(String id)
+    public void setId(Long id)
     {
         this.id = id;
     }
