@@ -40,16 +40,9 @@ public class ParkingRestController
     @GetMapping("/{id}")
     public ResponseEntity<ParkingDto> getById(@PathVariable Long id)
     {
-        try
-        {
-            Parking parking = this.parkingService.getById(id);
-            ParkingDto dto = this.parkingDtoHelper.dtoFromParking(parking);
-            return ResponseEntity.ok(dto);
-        }
-        catch (RuntimeException re)
-       {
-          throw new ResponseStatusException(HttpStatus.NOT_FOUND, re.getMessage());
-       }
+        Parking parking = this.parkingService.getById(id);
+        ParkingDto dto = this.parkingDtoHelper.dtoFromParking(parking);
+        return ResponseEntity.ok(dto);
     }
 
     //------------------------------------------------------------------------------------
