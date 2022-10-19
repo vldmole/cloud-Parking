@@ -19,7 +19,6 @@ public class ParkingDtoHelper
         parking.setLicense(dto.getLicense());
         parking.setState(dto.getState());
         parking.setColor(dto.getColor());
-        parking.setBill(dto.getBill());
         parking.setEntry(dto.getEntry());
         parking.setExit(dto.getExit());
 
@@ -35,7 +34,8 @@ public class ParkingDtoHelper
         dto.setLicense(parking.getLicense());
         dto.setState(parking.getState());
         dto.setColor(parking.getColor());
-        dto.setBill(parking.getBill());
+        dto.setBillValue( parking.getBillValue());
+        dto.setBillDescription(parking.getBillDescription());
         dto.setEntry(parking.getEntry());
         dto.setExit(parking.getExit());
 
@@ -44,11 +44,9 @@ public class ParkingDtoHelper
 
     public List<ParkingDto> dtoFromParking(List<Parking> lstParking)
     {
-        List<ParkingDto> lstDto = new ArrayList<>(lstParking.size());
+        final List<ParkingDto> lstDto = new ArrayList<>(lstParking.size());
 
         lstParking.forEach(parking -> lstDto.add(dtoFromParking(parking)));
-
-       // lstDto = lstParking.stream().map(parking -> dtoFromParking(parking)).collect(Collectors.toList());
 
         return lstDto;
     }

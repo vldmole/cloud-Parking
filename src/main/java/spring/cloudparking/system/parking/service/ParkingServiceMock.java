@@ -77,7 +77,7 @@ public class ParkingServiceMock
         oldParking.setColor(parking.getColor());
         oldParking.setState(parking.getState());
         oldParking.setModel(parking.getModel());
-        oldParking.setBill(parking.getBill());
+        //oldParking.setBill(parking.getBill());
 
         return oldParking;
     }
@@ -88,7 +88,7 @@ public class ParkingServiceMock
     {
         Parking parking = this.getById(id);
         parking.setExit(LocalDateTime.now());
-        parking.setBill(getBill(parking.getEntry(), parking.getExit()));
+       // parking.setBill(getBill(parking.getEntry(), parking.getExit()));
 
         return parking;
     }
@@ -118,7 +118,7 @@ public class ParkingServiceMock
         park.setColor(color);
         park.setEntry(LocalDateTime.now().minus(((int)(Math.random()*12)), ChronoUnit.HOURS));
         park.setExit(LocalDateTime.now());
-        park.setBill(getBill(park.getEntry(), park.getExit()));
+      //  park.setBill(getBill(park.getEntry(), park.getExit()));
 
         return park;
     }

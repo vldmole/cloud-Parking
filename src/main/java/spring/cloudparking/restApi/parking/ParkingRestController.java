@@ -52,17 +52,52 @@ public class ParkingRestController
        }
     }
 
+    //------------------------------------------------------------------------------------
     @PostMapping
     public ResponseEntity<ParkingDto> post(@RequestBody CreateParkingDto dto)
     {
         Parking parking = parkingDtoHelper.parkingFromDto(dto);
-        Parking newParking = parkingService.add(parking);
+        Parking newParking = parkingService.checkin(parking);
 
         ParkingDto resultDto = this.parkingDtoHelper.dtoFromParking(newParking);
         return ResponseEntity.status(HttpStatus.CREATED).body(resultDto);
     }
 
-    @PutMapping("{id}")
+    //------------------------------------------------------------------------------------
+    @PutMapping("/{id}/checkout/HourlyBilling")
+    public ResponseEntity<ParkingDto> hourlyBillingCheckout(@PathVariable Long id)
+    {
+        System.out.println("HourlyBillingCheckout");
+        Parking parking = parkingService.hourlyCheckout(id);
+
+        ParkingDto parkingDto = parkingDtoHelper.dtoFromParking(parking);
+
+        return ResponseEntity.ok(parkingDto);
+    }
+
+    //------------------------------------------------------------------------------------
+    @PutMapping("/{id}/checkout/DailyBilling")
+    public ResponseEntity<ParkingDto> dailyBillingCheckout(@PathVariable Long id)
+    {
+        Parking parking = parkingService.dailyCheckout(id);
+
+        ParkingDto parkingDto = parkingDtoHelper.dtoFromParking(parking);
+
+        return ResponseEntity.ok(parkingDto);
+    }
+
+    //------------------------------------------------------------------------------------
+    @PutMapping("/{id}/checkout/MonthlyBilling")
+    public ResponseEntity<ParkingDto> monthlyBillingCheckout(@PathVariable Long id)
+    {
+        Parking parking = parkingService.monthlyCheckout(id);
+
+        ParkingDto parkingDto = parkingDtoHelper.dtoFromParking(parking);
+
+        return ResponseEntity.ok(parkingDto);
+    }
+    //------------------------------------------------------------------------------------
+    @PutMapping("/{id}")
     public ResponseEntity<ParkingDto> put(@PathVariable Long id, @RequestBody ParkingDto dto)
     {
         Parking parking = this.parkingDtoHelper.parkingFromDto(dto);
@@ -77,7 +112,7 @@ public class ParkingRestController
     @DeleteMapping("{id}")
     public ResponseEntity<ParkingDto> delete(@PathVariable Long id)
     {
-        Parking parking = this.parkingService.parkingExit(id);
+        Parking parking = this.parkingService.hourlyCheckout(id);
 
         ParkingDto dto = this.parkingDtoHelper.dtoFromParking(parking);
 

@@ -8,8 +8,8 @@ public class Parking
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="Pk_id")
-    private Long id;
+    @Column(name="Pk_id", unique = true)
+    private long id;
     @Column(name="Pk_License", nullable = false)
     private String license;
     @Column(name="Pk_State", nullable = false)
@@ -18,10 +18,14 @@ public class Parking
     private String model;
     @Column(name="Pk_color", nullable = false)
     private String color;
-    @Column(name="Pk_EntryDateTime", nullable = false)
+    @Column(name="Pk_entryDateTime", nullable = false)
     private LocalDateTime entry;
+    @Column(name="Pk_exitDateTime", nullable = true)
     private LocalDateTime exit;
-    private Double bill;
+    @Column(name="Pk_billDescription", nullable = true)
+    private String billDescription;
+    @Column(name="Pk_billValue", nullable = true)
+    private Float billValue;
 
     public void setId(Long id)
     {
@@ -93,13 +97,22 @@ public class Parking
         this.exit = exit;
     }
 
-    public Double getBill()
+    public Float getBillValue()
     {
-        return bill;
+        return billValue;
     }
 
-    public void setBill(Double bill)
+    public void setBillValue(Float bill)
     {
-        this.bill = bill;
+        this.billValue = bill;
+    }
+
+    public String getBillDescription()
+    {
+        return this.billDescription;
+    }
+    public void setBillDescription(String billDescription)
+    {
+        this.billDescription = billDescription;
     }
 }

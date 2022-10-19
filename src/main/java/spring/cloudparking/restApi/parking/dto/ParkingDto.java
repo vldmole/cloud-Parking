@@ -17,7 +17,8 @@ public class ParkingDto
     private LocalDateTime entry;
     @JsonFormat(pattern = "dd/mm/yyy hh:mm")
     private LocalDateTime exit;
-    private Double bill;
+    private Float billValue;
+    private String billDescription;
 
     public Long getId()
     {
@@ -89,13 +90,23 @@ public class ParkingDto
         this.exit = exit;
     }
 
-    public Double getBill()
+    public Float getBillValue()
     {
-        return bill;
+        return billValue;
     }
 
-    public void setBill(Double bill)
+    public void setBillValue(Float billValue)
     {
-        this.bill = bill;
+        this.billValue = billValue;
+    }
+
+    public String getBillDescription()
+    {
+        return billDescription;
+    }
+
+    public void setBillDescription(String billDescription)
+    {
+        this.billDescription = billDescription;
     }
 }
