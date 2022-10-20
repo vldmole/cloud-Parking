@@ -1,5 +1,7 @@
 package spring.cloudparking.system.parking.model;
 
+import spring.cloudparking.system.parking.billing.BillingType;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -22,6 +24,8 @@ public class Parking
     private LocalDateTime entry;
     @Column(name="Pk_exitDateTime", nullable = true)
     private LocalDateTime exit;
+    @Column(name="Pk_BillingType", nullable = false)
+    private BillingType billingType;
     @Column(name="Pk_billDescription", nullable = true)
     private String billDescription;
     @Column(name="Pk_billValue", nullable = true)
@@ -95,6 +99,16 @@ public class Parking
     public void setExit(LocalDateTime exit)
     {
         this.exit = exit;
+    }
+
+    public BillingType getBillingType()
+    {
+        return this.billingType;
+    }
+
+    public void setBillingType(BillingType billingType)
+    {
+        this.billingType = billingType;
     }
 
     public Float getBillValue()

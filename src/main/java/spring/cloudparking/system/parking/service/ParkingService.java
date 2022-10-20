@@ -1,24 +1,25 @@
 package spring.cloudparking.system.parking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import spring.cloudparking.system.exception.ParkingExceptionFactory;
+import spring.cloudparking.system.parking.billing.BillingType;
 import spring.cloudparking.system.parking.model.Parking;
 import spring.cloudparking.system.parking.repository.ParkingRepository;
 import spring.cloudparking.system.parking.billing.Bill;
 import spring.cloudparking.system.parking.billing.BillCalculator;
 import spring.cloudparking.system.parking.billing.factory.BillCalculatorFactory;
-import spring.cloudparking.system.parking.billing.factory.BillCalculatorFactory.BillingType;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ParkingService
@@ -85,6 +86,18 @@ public class ParkingService
     }
 
     //-------------------------------------------------------------------------------------
+    public Parking deleteById(Long id)
+    {
+        Optional<Parking> optional = repository.findById(id);
+        if(optional.isEmpty())
+            throw parkingExceptionFactory.createNotFoundException(Parking.class.getName(),"id", id);
+
+        this.repository.deleteById(id);
+
+        return optional.get();
+    }
+
+    //-------------------------------------------------------------------------------------
     @Transactional(isolation = Isolation.DEFAULT)
     public
     Parking checkin(@NonNull Parking parking)
@@ -96,60 +109,14 @@ public class ParkingService
 
     //-------------------------------------------------------------------------------------
     @Transactional
-    public
-    Parking hourlyCheckout(@NonNull Long id)
-    {
-        BillCalculator billCalculator =
-                billCalculatorFactory.getBillCalculator(BillingType.HOURLY_BILLING);
-
-        final float currentHourTax = 3.0f;
-        final float currentAdditionalHourTax = 1.5f;
-        billCalculator.setBaseTax(currentHourTax);
-        billCalculator.setAdditionalTax(currentAdditionalHourTax);
-
-        return doCheckout(id, billCalculator);
-    }
-
-    //-------------------------------------------------------------------------------------
-    @Transactional
-    public
-    Parking dailyCheckout(@NonNull Long id)
-    {
-        BillCalculator billCalculator =
-                billCalculatorFactory.getBillCalculator(BillingType.DAILY_BILLING);
-
-        final float currentDayTax = 20.0f;
-        final float currentAdditionalHourTax = 1.5f;
-        billCalculator.setBaseTax(currentDayTax);
-        billCalculator.setAdditionalTax(currentAdditionalHourTax);
-
-        return doCheckout(id, billCalculator);
-    }
-
-    //-------------------------------------------------------------------------------------
-    @Transactional
-    public
-    Parking monthlyCheckout(@NonNull Long id)
-    {
-        BillCalculator billCalculator =
-                billCalculatorFactory.getBillCalculator(BillingType.MONTHLY_BILLING);
-
-        final float currentMonthTax = 300.0f;
-        final float currentAdditionalDayTax = 15.0f;
-        billCalculator.setBaseTax(currentMonthTax);
-        billCalculator.setAdditionalTax(currentAdditionalDayTax);
-
-        return doCheckout(id, billCalculator);
-    }
-
-    //-------------------------------------------------------------------------------------
-    private Parking doCheckout(@NonNull Long id, BillCalculator billCalculatorStrategy)
+    public Parking checkout(@NonNull Long id)
     {
         Parking parking = this.getById(id);
-
         parking.setExit(LocalDateTime.now());
 
-        Bill bill = billCalculatorStrategy.getBillFor(parking.getEntry(), parking.getExit());
+        BillCalculator billCalculator = this.billCalculatorFactory.getBillCalculator(parking.getBillingType());
+
+        Bill bill = billCalculator.getBillFor(parking.getEntry(), parking.getExit());
         parking.setBillValue(bill.getValue());
 
         StringBuilder builder = new StringBuilder();
@@ -163,4 +130,6 @@ public class ParkingService
 
         return repository.save(parking);
     }
+
+
 }

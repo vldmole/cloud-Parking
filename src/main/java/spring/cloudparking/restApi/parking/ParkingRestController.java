@@ -4,12 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import spring.cloudparking.restApi.parking.dto.CreateParkingDto;
-import spring.cloudparking.restApi.parking.dto.ParkingDto;
-import spring.cloudparking.restApi.parking.dto.ParkingDtoHelper;
-import spring.cloudparking.system.parking.model.Parking;
-import spring.cloudparking.system.parking.service.ParkingService;
+import spring.cloudparking.system.facade.ParkingFacade;
+import spring.cloudparking.system.facade.parking.dto.CreateParkingDto;
+import spring.cloudparking.system.facade.parking.dto.ParkingDto;
 
 import java.util.List;
 
@@ -17,98 +14,83 @@ import java.util.List;
 @RequestMapping({"/parking", "/Parking", "/PARKING"})
 public class ParkingRestController
 {
-    ParkingService parkingService;
-    ParkingDtoHelper parkingDtoHelper;
+    ParkingFacade parkingFacade;
 
+    //------------------------------------------------------------------------------------
     @Autowired
-    public ParkingRestController(ParkingService parkingService, ParkingDtoHelper parkingDtoHelper)
+    public ParkingRestController(ParkingFacade parkingFacade)
     {
-        this.parkingService = parkingService;
-        this.parkingDtoHelper = parkingDtoHelper;
+        this.parkingFacade = parkingFacade;
     }
 
+    //------------------------------------------------------------------------------------
     @GetMapping
     public ResponseEntity<List<ParkingDto>> get()
     {
-        List<Parking> parkingList = parkingService.findAll();
-
-        List<ParkingDto> parkingDtoList = this.parkingDtoHelper.dtoFromParking(parkingList);
+        List<ParkingDto> parkingDtoList = parkingFacade.findAll();
 
         return ResponseEntity.ok(parkingDtoList);
     }
 
+    //------------------------------------------------------------------------------------
     @GetMapping("/{id}")
     public ResponseEntity<ParkingDto> getById(@PathVariable Long id)
     {
-        Parking parking = this.parkingService.getById(id);
-        ParkingDto dto = this.parkingDtoHelper.dtoFromParking(parking);
-        return ResponseEntity.ok(dto);
-    }
-
-    //------------------------------------------------------------------------------------
-    @PostMapping
-    public ResponseEntity<ParkingDto> post(@RequestBody CreateParkingDto dto)
-    {
-        Parking parking = parkingDtoHelper.parkingFromDto(dto);
-        Parking newParking = parkingService.checkin(parking);
-
-        ParkingDto resultDto = this.parkingDtoHelper.dtoFromParking(newParking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resultDto);
-    }
-
-    //------------------------------------------------------------------------------------
-    @PutMapping("/{id}/checkout/HourlyBilling")
-    public ResponseEntity<ParkingDto> hourlyBillingCheckout(@PathVariable Long id)
-    {
-        System.out.println("HourlyBillingCheckout");
-        Parking parking = parkingService.hourlyCheckout(id);
-
-        ParkingDto parkingDto = parkingDtoHelper.dtoFromParking(parking);
+        ParkingDto parkingDto = parkingFacade.getById(id);
 
         return ResponseEntity.ok(parkingDto);
     }
 
     //------------------------------------------------------------------------------------
-    @PutMapping("/{id}/checkout/DailyBilling")
-    public ResponseEntity<ParkingDto> dailyBillingCheckout(@PathVariable Long id)
+    @PostMapping("/checkin")
+    public ResponseEntity<ParkingDto> postCheckin(@RequestBody CreateParkingDto dto)
     {
-        Parking parking = parkingService.dailyCheckout(id);
+        ParkingDto newParkingDto = parkingFacade.checkin(dto);
 
-        ParkingDto parkingDto = parkingDtoHelper.dtoFromParking(parking);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newParkingDto);
+    }
+
+    //------------------------------------------------------------------------------------
+    @PostMapping("/{id}/checkout")
+    public ResponseEntity<ParkingDto> postCheckout(@PathVariable Long id)
+    {
+        ParkingDto parkingDto = parkingFacade.checkout(id);
 
         return ResponseEntity.ok(parkingDto);
     }
 
     //------------------------------------------------------------------------------------
-    @PutMapping("/{id}/checkout/MonthlyBilling")
-    public ResponseEntity<ParkingDto> monthlyBillingCheckout(@PathVariable Long id)
+    @PostMapping("/checkout")
+    public ResponseEntity<ParkingDto> postCheckout(@RequestBody ParkingDto dto)
     {
-        Parking parking = parkingService.monthlyCheckout(id);
-
-        ParkingDto parkingDto = parkingDtoHelper.dtoFromParking(parking);
+        ParkingDto parkingDto = parkingFacade.checkout(dto.getId());
 
         return ResponseEntity.ok(parkingDto);
     }
+
+
     //------------------------------------------------------------------------------------
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingDto> put(@PathVariable Long id, @RequestBody ParkingDto dto)
+    public ResponseEntity<ParkingDto> put(@PathVariable Long id, @RequestBody ParkingDto parkingDto)
     {
-        Parking parking = this.parkingDtoHelper.parkingFromDto(dto);
+        ParkingDto updatedParkingDto = this.parkingFacade.updateById(id, parkingDto);
 
-        Parking updatedParking = this.parkingService.updateById(id, parking);
-
-        ParkingDto resultParkingDto = this.parkingDtoHelper.dtoFromParking(updatedParking);
-
-        return ResponseEntity.ok(resultParkingDto);
+        return ResponseEntity.ok(updatedParkingDto);
     }
 
-    @DeleteMapping("{id}")
+    //------------------------------------------------------------------------------------
+    @DeleteMapping("/{id}")
     public ResponseEntity<ParkingDto> delete(@PathVariable Long id)
     {
-        Parking parking = this.parkingService.hourlyCheckout(id);
+        ParkingDto parkingDto = this.parkingFacade.deleteById(id);
 
-        ParkingDto dto = this.parkingDtoHelper.dtoFromParking(parking);
+        return ResponseEntity.ok(parkingDto);
+    }
 
-        return ResponseEntity.ok(dto);
+    //------------------------------------------------------------------------------------
+    @GetMapping("/BillingTypes")
+    public ResponseEntity<String[]> getBillingTypes()
+    {
+        return ResponseEntity.ok(this.parkingFacade.getBillingTypes());
     }
 }

@@ -6,7 +6,7 @@ import spring.cloudparking.system.parking.billing.BillCalculator;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class HourlyBilling implements BillCalculator
+public class HourBilling implements BillCalculator
 {
     private float firstHourTax;
     private float additionalHourTax;

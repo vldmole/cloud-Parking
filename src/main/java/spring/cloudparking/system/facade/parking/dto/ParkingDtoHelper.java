@@ -1,6 +1,7 @@
-package spring.cloudparking.restApi.parking.dto;
+package spring.cloudparking.system.facade.parking.dto;
 
 import org.springframework.stereotype.Component;
+import spring.cloudparking.system.parking.billing.BillingType;
 import spring.cloudparking.system.parking.model.Parking;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class ParkingDtoHelper
         parking.setLicense(dto.getLicense());
         parking.setState(dto.getState());
         parking.setColor(dto.getColor());
+        parking.setBillingType(BillingType.valueOf(dto.getBillingTypeName()));
         parking.setEntry(dto.getEntry());
         parking.setExit(dto.getExit());
 
@@ -34,6 +36,7 @@ public class ParkingDtoHelper
         dto.setLicense(parking.getLicense());
         dto.setState(parking.getState());
         dto.setColor(parking.getColor());
+        dto.setBillingTypeName(parking.getBillingType().name());
         dto.setBillValue( parking.getBillValue());
         dto.setBillDescription(parking.getBillDescription());
         dto.setEntry(parking.getEntry());
@@ -59,6 +62,7 @@ public class ParkingDtoHelper
         parking.setLicense(dto.getLicense());
         parking.setState(dto.getState());
         parking.setColor(dto.getColor());
+        parking.setBillingType(BillingType.valueOf(dto.getBillingTypeName()));
 
         return parking;
     }

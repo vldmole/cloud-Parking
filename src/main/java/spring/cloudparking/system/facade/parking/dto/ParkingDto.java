@@ -1,4 +1,4 @@
-package spring.cloudparking.restApi.parking.dto;
+package spring.cloudparking.system.facade.parking.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.stereotype.Component;
@@ -13,6 +13,7 @@ public class ParkingDto
     private String state;
     private String model;
     private String color;
+    private String billingTypeName;
     @JsonFormat(pattern = "dd/mm/yyy hh:mm")
     private LocalDateTime entry;
     @JsonFormat(pattern = "dd/mm/yyy hh:mm")
@@ -88,6 +89,16 @@ public class ParkingDto
     public void setExit(LocalDateTime exit)
     {
         this.exit = exit;
+    }
+
+    public String getBillingTypeName()
+    {
+        return this.billingTypeName;
+    }
+
+    public void setBillingTypeName(String billingTypeName)
+    {
+        this.billingTypeName =  billingTypeName;
     }
 
     public Float getBillValue()

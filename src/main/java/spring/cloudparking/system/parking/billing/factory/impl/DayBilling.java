@@ -6,7 +6,7 @@ import spring.cloudparking.system.parking.billing.BillCalculator;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class DailyBilling implements BillCalculator
+public class DayBilling implements BillCalculator
 {
     private float firstDayTax;
     private float additionalDayTax;

@@ -1,16 +1,13 @@
 package spring.cloudparking.system.parking.billing.factory;
 
 import org.springframework.stereotype.Component;
-import spring.cloudparking.system.parking.billing.factory.impl.MonthlyBilling;
+import spring.cloudparking.system.parking.billing.BillingType;
+import spring.cloudparking.system.parking.billing.factory.impl.MonthBilling;
 import spring.cloudparking.system.parking.billing.BillCalculator;
-import spring.cloudparking.system.parking.billing.factory.impl.DailyBilling;
-import spring.cloudparking.system.parking.billing.factory.impl.HourlyBilling;
+import spring.cloudparking.system.parking.billing.factory.impl.DayBilling;
+import spring.cloudparking.system.parking.billing.factory.impl.HourBilling;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Arrays;
-import java.util.Properties;
 
 @Component
 public class BillCalculatorFactory
@@ -33,8 +30,7 @@ public class BillCalculatorFactory
     }
 
     //-----------------------------------------------------------------------------------------
-    public enum
-    BillingType {HOURLY_BILLING, DAILY_BILLING, MONTHLY_BILLING};
+
 
     private
     BillCalculator[] billCalculatorInstances = new BillCalculator[BillingType.values().length];
@@ -50,9 +46,9 @@ public class BillCalculatorFactory
     //-----------------------------------------------------------------------------------
     static private
     Factory[] factories = {
-        ()-> new HourlyBilling(),
-        ()-> new DailyBilling(),
-        ()-> new MonthlyBilling()
+        ()-> new HourBilling(),
+        ()-> new DayBilling(),
+        ()-> new MonthBilling()
     };
 
     //-----------------------------------------------------------------------------------
