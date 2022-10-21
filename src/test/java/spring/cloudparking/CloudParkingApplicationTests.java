@@ -8,7 +8,8 @@ class CloudParkingApplicationTests
 {
 
 	@Test
-	void contextLoads() {
+	void contextLoads()
+	{
 	}
 
 }

@@ -3,6 +3,7 @@ package spring.cloudparking.restApi.parking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import spring.cloudparking.system.facade.ParkingFacade;
 import spring.cloudparking.system.facade.parking.dto.CreateParkingDto;
@@ -11,7 +12,8 @@ import spring.cloudparking.system.facade.parking.dto.ParkingDto;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/parking", "/Parking", "/PARKING"})
+//@RequestMapping({"/parking", "/Parking", "/PARKING"})
+@EnableWebSecurity
 public class ParkingRestController
 {
     ParkingFacade parkingFacade;
@@ -24,7 +26,7 @@ public class ParkingRestController
     }
 
     //------------------------------------------------------------------------------------
-    @GetMapping
+    @GetMapping("/parking")
     public ResponseEntity<List<ParkingDto>> get()
     {
         List<ParkingDto> parkingDtoList = parkingFacade.findAll();
@@ -33,7 +35,7 @@ public class ParkingRestController
     }
 
     //------------------------------------------------------------------------------------
-    @GetMapping("/{id}")
+    @GetMapping("/parking/{id}")
     public ResponseEntity<ParkingDto> getById(@PathVariable Long id)
     {
         ParkingDto parkingDto = parkingFacade.getById(id);
@@ -42,16 +44,17 @@ public class ParkingRestController
     }
 
     //------------------------------------------------------------------------------------
-    @PostMapping("/checkin")
+    @PostMapping("/parking/checkin")
     public ResponseEntity<ParkingDto> postCheckin(@RequestBody CreateParkingDto dto)
     {
+        System.out.println("checkin");
         ParkingDto newParkingDto = parkingFacade.checkin(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newParkingDto);
     }
 
     //------------------------------------------------------------------------------------
-    @PostMapping("/{id}/checkout")
+    @PostMapping("/parking/{id}/checkout")
     public ResponseEntity<ParkingDto> postCheckout(@PathVariable Long id)
     {
         ParkingDto parkingDto = parkingFacade.checkout(id);
@@ -60,7 +63,7 @@ public class ParkingRestController
     }
 
     //------------------------------------------------------------------------------------
-    @PostMapping("/checkout")
+    @PostMapping("/parking/checkout")
     public ResponseEntity<ParkingDto> postCheckout(@RequestBody ParkingDto dto)
     {
         ParkingDto parkingDto = parkingFacade.checkout(dto.getId());
@@ -70,7 +73,7 @@ public class ParkingRestController
 
 
     //------------------------------------------------------------------------------------
-    @PutMapping("/{id}")
+    @PutMapping("/parking/{id}")
     public ResponseEntity<ParkingDto> put(@PathVariable Long id, @RequestBody ParkingDto parkingDto)
     {
         ParkingDto updatedParkingDto = this.parkingFacade.updateById(id, parkingDto);
@@ -79,7 +82,7 @@ public class ParkingRestController
     }
 
     //------------------------------------------------------------------------------------
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/parking/{id}")
     public ResponseEntity<ParkingDto> delete(@PathVariable Long id)
     {
         ParkingDto parkingDto = this.parkingFacade.deleteById(id);
@@ -88,7 +91,7 @@ public class ParkingRestController
     }
 
     //------------------------------------------------------------------------------------
-    @GetMapping("/BillingTypes")
+    @GetMapping("/parking/BillingTypes")
     public ResponseEntity<String[]> getBillingTypes()
     {
         return ResponseEntity.ok(this.parkingFacade.getBillingTypes());

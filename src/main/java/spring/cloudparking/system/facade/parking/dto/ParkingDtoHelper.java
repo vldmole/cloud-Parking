@@ -56,6 +56,7 @@ public class ParkingDtoHelper
 
     public Parking parkingFromDto(CreateParkingDto dto)
     {
+        System.out.println(dto);
         Parking parking = new Parking();
 
         parking.setModel(dto.getModel());
