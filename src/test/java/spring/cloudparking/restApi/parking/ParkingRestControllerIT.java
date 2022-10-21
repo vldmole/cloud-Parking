@@ -2,18 +2,19 @@ package spring.cloudparking.restApi.parking;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import spring.cloudparking.system.database.DatabaseTestContainer;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
@@ -21,8 +22,6 @@ public class ParkingRestControllerIT
 {
     @LocalServerPort
     private int port;
-
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @BeforeAll
     public static void setUpDatabaseContainer()
@@ -40,14 +39,13 @@ public class ParkingRestControllerIT
     @Test
     public void testGet()
     {
+
         when()
             .get("/")
-        .then()
-            .statusCode(HttpStatus.OK.value())
-            .and()
-            .extract()
-                .response()
-                    .body().toString().contains("Hello World!");
+            .then()
+                .statusCode(HttpStatus.OK.value())
+                .and()
+                .body(is("Hello World!"));
     }
 
     @Test
@@ -63,8 +61,8 @@ public class ParkingRestControllerIT
             .get("/parking/BillingTypes")
         .then()
             .statusCode(HttpStatus.OK.value())
-            .and()
-                .extract().response().print();
+                .assertThat()
+                .body("size()", greaterThan(0));
 
     }
 
@@ -107,10 +105,10 @@ public class ParkingRestControllerIT
 
         .when()
             .post("/parking/checkin")
-        .then()
+        .then().assertThat()
             .statusCode(HttpStatus.CREATED.value())
             .and()
-            .extract().response().print();
+            .body("license", Matchers.is("Jeep"));
     }
 
     @Test
@@ -129,8 +127,6 @@ public class ParkingRestControllerIT
             .then()
                 .statusCode(HttpStatus.OK.value())
                 .and()
-                .extract()
-                    .response().body()
-                .toString().contains("jeep");
+                .body("id", is(1));
     }
 }
